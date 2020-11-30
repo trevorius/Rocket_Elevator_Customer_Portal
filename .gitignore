@@ -290,3 +290,5 @@ obj/
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/vscode,aspnetcore,dotnetcore
+
+appsettings.json
