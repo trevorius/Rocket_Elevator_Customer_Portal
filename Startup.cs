@@ -10,55 +10,55 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 
-public class Startup
+namespace CustomerPortal
 {
-    public Startup(IConfiguration configuration)
+    public class Startup
     {
-        Configuration = configuration;
-    }
-
-    public IConfiguration Configuration { get; }
-
-    public void ConfigureServices(IServiceCollection services)
-    {
-        services.AddControllersWithViews();
-        services.AddRazorPages();
-    }
-
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-        if (env.IsDevelopment())
+        public Startup(IConfiguration configuration)
         {
-            app.UseDeveloperExceptionPage();
-            // app.UseDatabaseErrorPage();
+            Configuration = configuration;
         }
-        else
+
+        public IConfiguration Configuration { get; }
+
+        public void ConfigureServices(IServiceCollection services)
         {
-            app.UseExceptionHandler("/Home/Error");
-            app.UseHsts();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
 
-        app.UseRouting();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.UseEndpoints(endpoints =>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
-            endpoints.MapRazorPages();
-        });
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                // app.UseDatabaseErrorPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
+            });
+        }
     }
 }
 
 
-
-// namespace CustomerPortal
-// {
 //     public class Startup
 //     {
 //         public Startup(IConfiguration configuration)
@@ -102,4 +102,4 @@ public class Startup
 //             });
 //         }
 //     }
-// }
+
