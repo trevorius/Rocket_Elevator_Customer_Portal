@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
 
 
 namespace CustomerPortal
@@ -32,7 +33,7 @@ namespace CustomerPortal
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                // app.UseDatabaseErrorPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
