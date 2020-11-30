@@ -6,6 +6,16 @@
     <title>@ViewData["Title"] - CustomerPortal</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+		<link href="~/css/imports/essentials.css" rel="stylesheet" type="text/css" />
+		<link href="~/css/imports/layout.css" rel="stylesheet" type="text/css" />
+
+        @* <link href="~/css/imports/bootstrap/bootstrap.min.css" rel="stylesheet" type="text/css" /> *@
+
+
+		<!-- PAGE LEVEL SCRIPTS -->
+		<link href="~/css/imports/header-1.css" rel="stylesheet" type="text/css" />
+		<link href="~/css/imports/blue.css" rel="stylesheet" type="text/css" id="color_scheme" />
+
 </head>
 <body>
     <header>
@@ -46,15 +56,23 @@
     </div>
 
 
-    <footer class="border-top footer text-muted">
+    @* <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - CustomerPortal - 
-            @* <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> *@
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
-    </footer>
+    </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>var plugin_path = '~/js/imports/plugins/';</script>
+	@* <script src="~js/imports/plugins/jquery/jquery-3.3.1.min.js"></script> *@
+
+	<script src="~/js/imports/scripts.js"></script>
+    @* <script src="~/js/imports/bootstrap/bootstrap.bundle.min.js"></script>  *@
+	
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>
