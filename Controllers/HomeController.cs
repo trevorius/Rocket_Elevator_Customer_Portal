@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using CustomerPortal.Models;
+using CustomerPortal.Controllers;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CustomerPortal.Controllers
@@ -24,10 +25,11 @@ namespace CustomerPortal.Controllers
             return View();
         }
 
-        // public IActionResult Privacy()
-        // {
-        //     return View();
-        // }
+        public async Task<IActionResult> Privacy()
+        {
+            var customerList = await CustomerController.getCustomerList();
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
