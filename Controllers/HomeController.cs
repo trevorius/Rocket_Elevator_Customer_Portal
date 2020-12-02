@@ -27,6 +27,8 @@ namespace CustomerPortal.Controllers
 
         public async Task<IActionResult> Privacy()
         {
+
+            // call customerlist to test function
             var customerList = await CustomerController.getCustomerList();
             return View();
         }

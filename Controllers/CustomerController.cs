@@ -18,15 +18,22 @@ namespace CustomerPortal.Controllers
 {
     public class CustomerController
     {
-        public static async Task<List<Customer>> getCustomerList()
+        // method to get CustomerList
+            public static async Task<List<Customer>> getCustomerList()
         {
-                var client = new HttpClient();
-                var response = await client.GetAsync("http://localhost:5501/api/customers");
-                var content = response.Content.ReadAsStringAsync().Result;
-                var CustomerList = JsonSerializer.Deserialize<List<Customer>>(content);
-                var test3 = CustomerList[0].company_name;
-                Console.WriteLine(test3);
-                return CustomerList;
+            // connexion
+            var client = new HttpClient();
+            // get call to API
+            var response = await client.GetAsync("http://localhost:5501/api/customers");
+            // save the response
+            var content = response.Content.ReadAsStringAsync().Result;
+            // parse response
+            var CustomerList = JsonSerializer.Deserialize<List<Customer>>(content);
+            // test log to console
+            var test3 = CustomerList[0].company_name;
+            Console.WriteLine(test3);
+            
+            return CustomerList;
         }   
     }
 
