@@ -8,6 +8,7 @@ namespace CustomerPortal.Models
         private DateTime _date = DateTime.Now;
 
         public long Id { get; set; }
+        public string serial_number { get; set; } 
         public string model { get; set; } 
         public string type_of_building { get; set; }
         public string status { get; set; }
