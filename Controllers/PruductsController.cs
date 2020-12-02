@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CustomerPortal.Controllers;
 
 namespace CustomerPortal.Controllers
 {
@@ -21,7 +22,7 @@ namespace CustomerPortal.Controllers
                         // connexion
                         var client = new HttpClient();
                         // get call to API
-                        var response = await client.GetAsync("http://localhost:5501/api/buildings/for-customer-{id}");
+                        var response = await client.GetAsync(CustomerController.ApiURL("buildings/for-customer-",id));
                         // save the response
                         var content = response.Content.ReadAsStringAsync().Result;
                         // parse response
@@ -37,7 +38,7 @@ namespace CustomerPortal.Controllers
                         // connexion
                         var client = new HttpClient();
                         // get call to API
-                        var response = await client.GetAsync("http://localhost:5501/api/batteries/for-building-{id}");
+                        var response = await client.GetAsync(CustomerController.ApiURL("batteries/for-building-",id));
                         // save the response
                         var content = response.Content.ReadAsStringAsync().Result;
                         // parse response
@@ -53,7 +54,7 @@ namespace CustomerPortal.Controllers
                         // connexion
                         var client = new HttpClient();
                         // get call to API
-                        var response = await client.GetAsync("http://localhost:5501/api/columns/for-battery-{id}");
+                        var response = await client.GetAsync(CustomerController.ApiURL("columns/for-battery-",id));
                         // save the response
                         var content = response.Content.ReadAsStringAsync().Result;
                         // parse response
@@ -69,7 +70,7 @@ namespace CustomerPortal.Controllers
                         // connexion
                         var client = new HttpClient();
                         // get call to API
-                        var response = await client.GetAsync("http://localhost:5501/api/elevators/for-column-{id}");
+                        var response = await client.GetAsync(CustomerController.ApiURL("elevators/for-column-",id));
                         // save the response
                         var content = response.Content.ReadAsStringAsync().Result;
                         // parse response

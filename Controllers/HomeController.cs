@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CustomerPortal.Controllers
 {
+
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -27,6 +28,9 @@ namespace CustomerPortal.Controllers
 
         public async Task<IActionResult> Privacy()
         {
+            //call buildings for customer 3 test function
+            var buildinglist = await ProductsController.getBuildingListForCustomer(3);
+            
 
             // call customerlist to test function
             var customerList = await CustomerController.getCustomerList();

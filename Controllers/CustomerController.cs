@@ -17,14 +17,34 @@ using System.Text.Json.Serialization;
 namespace CustomerPortal.Controllers
 {
     public class CustomerController
+
     {
+        // Api call Url so only one line has to be changed when we go remote
+        public static string ApiURL(string parameter,long? variable = null)
+        {  
+            // define base variables for final conection string 
+            string URLreturn ;
+            string baseUrl = "http://localhost:5501/api/";
+            // logic for the return string so it correspondes to api end points
+            if(variable == null)
+            {            
+                URLreturn =  baseUrl + parameter ;
+            }
+            else
+            {
+                URLreturn = baseUrl + parameter + $"{variable}";
+            }
+            // return an valid api endpoint from the given parameters
+            return URLreturn;
+        }
         // method to get CustomerList
             public static async Task<List<Customer>> getCustomerList()
         {
+            
             // connexion
             var client = new HttpClient();
             // get call to API
-            var response = await client.GetAsync("http://localhost:5501/api/customers");
+            var response = await client.GetAsync( ApiURL("customers"));
             // save the response
             var content = response.Content.ReadAsStringAsync().Result;
             // parse response
