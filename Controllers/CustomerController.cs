@@ -54,7 +54,37 @@ namespace CustomerPortal.Controllers
             Console.WriteLine(test3);
             
             return CustomerList;
-        }   
+        } 
+
+        public static async Task<Customer> getCustomerByEmail(string email)
+        {
+            // connexion
+            var client = new HttpClient();
+            // get call to api 
+            var response = await client.GetAsync( ApiURL("Customers/email/" + email));
+            // save the response
+            var content = response.Content.ReadAsStringAsync().Result;
+            //parse response
+            var customer = JsonSerializer.Deserialize<Customer>(content);
+
+            return customer;
+
+        }
+
+        // a voir si temps de changer le register pour un post
+        // public static async Task<Boolean> isEmailOnRegisterList(string email)
+        // {
+        //     //connexion
+        //     var client = new HttpClient();
+        //     HttpResponseMessage response = await client.PostAsJsonAsync("email", email);
+        //     response.EnsureSuccessStatusCode();
+
+            
+
+        //     // return URI of the created resource.
+        //     return response.Content;
+
+        // } 
     }
 
 }

@@ -17,6 +17,10 @@ namespace CustomerPortal.Controllers
 {
     public class ProductsController : Controller
     {
+                    public async Task<IActionResult> Products()
+                    {
+                        return View();
+                    }
                     public static async Task<List<Building>> getBuildingListForCustomer(long id)
                     {
                         // connexion
@@ -81,6 +85,7 @@ namespace CustomerPortal.Controllers
             
                         return ElevatorList;
                     }
+
 
     }
 }

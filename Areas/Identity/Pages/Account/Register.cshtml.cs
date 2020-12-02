@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
+using CustomerPortal.Controllers;
 
 
 namespace CustomerPortal.Areas.Identity.Pages.Account
@@ -75,10 +76,11 @@ namespace CustomerPortal.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            var client = new HttpClient();
-            var response = await client.GetAsync("http://localhost:5501/api/customers");
-            var content = response.Content.ReadAsStringAsync().Result;
-            if (content.Contains(Input.Email))
+            // var client = new HttpClient();
+            // var response = await client.GetAsync(CustomerController.ApiURL("customers"));
+            // var content = response.Content.ReadAsStringAsync().Result;
+            var content = await CustomerController.getCustomerByEmail(Input.Email);
+            if (content.email_company_contact ==  Input.Email)
             {
 
                 if (ModelState.IsValid)
@@ -119,6 +121,7 @@ namespace CustomerPortal.Areas.Identity.Pages.Account
                     }
                 }
             }
+            
             // If we got this far, something failed, redisplay form
             return Page();
         }
