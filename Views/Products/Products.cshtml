@@ -10,15 +10,61 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>@UserManager.GetUserName(User)</p>
 @{
     string email = UserManager.GetUserName(User);
     
 
     Customer customer = await CustomerController.getCustomerByEmail(email);
+    System.Console.WriteLine(customer.id);
 
-    var buildingList = ProductsController.getBuildingListForCustomer(customer.Id);
+    var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
 }
-<div>
-<div>@customer.company_contact_phone</div>
+<div class="row">
+
+    <div class="col-md-2">
+        <ul>
+        @{
+            int i = 0;
+            foreach(Building building in buildingList)
+            {   string buildingId = $"building{i}";
+                string buildingId2 = $"{buildingId}";
+                <li>Building at : @building.address_of_the_building </li>
+                i ++ ;
+            }
+        }
+        </ul>
+    </div>
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-4" id="information-display">
+        <ul>
+            <li>@customer.company_name</li>
+            <li>address : @customer.company_headquarter_address</li>
+            <li>phone : @customer.company_contact_phone</li>
+            <li>email : @customer.email_company_contact</li>
+            <li>technical contact : @customer.full_name_service_technical_authority</li>
+            <li>tec phone : @customer.technical_authority_phone</li>
+            <li>tec email : @customer.technical_manager_email</li>
+        </ul>    
+    </div>
 </div>
+<script>
+
+    
+
+
+    $(function(){
+        $(".building").click(function(){
+            $('.building').css("color", "blue")
+
+        });
+
+    }); 
+</script>

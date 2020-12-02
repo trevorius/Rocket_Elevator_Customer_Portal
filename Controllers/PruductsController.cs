@@ -91,6 +91,7 @@ namespace CustomerPortal.Controllers
         public async Task<IActionResult> Products()
         {
             string email = User.Identity.Name;
+        
             System.Console.WriteLine(email);
             // ViewBag.email = getLoggedInUserEmail();
             return View();
@@ -106,8 +107,17 @@ namespace CustomerPortal.Controllers
             // parse response
             var BuildingList = JsonSerializer.Deserialize<List<Building>>(content);
             // test log to console
+            if(BuildingList.Count > 0)
+            {
             var test3 = BuildingList[0].address_of_the_building;
             Console.WriteLine(test3);
+            }
+            else
+            {
+                Building Building0 = new Building();
+                Building0.address_of_the_building = "no buildings yet";
+                BuildingList.Add(Building0);
+            }
 
             return BuildingList;
         }
