@@ -91,7 +91,13 @@ namespace CustomerPortal.Controllers
         public async Task<IActionResult> Products()
         {
             string email = User.Identity.Name;
-        
+            Customer customer = await CustomerController.getCustomerByEmail(email);
+            ViewBag.customer = customer ;
+
+            var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
+            ViewBag.buildingList = buildingList;
+
+
             System.Console.WriteLine(email);
             // ViewBag.email = getLoggedInUserEmail();
             return View();

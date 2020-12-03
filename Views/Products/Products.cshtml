@@ -1,38 +1,53 @@
 @using System;
 @using CustomerPortal.Controllers;
-@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity;
+
+@using System.Collections.Generic;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@using System.Threading.Tasks;
+@using System.Diagnostics;
+@using System.Web;
+
+
+
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
 
 @{
-    ViewData["Title"] = "Your Prodcuts";
+    ViewData["Title"] = "Your Products";
 }
 <h1>@ViewData["Title"]</h1>
 
 @{
     string email = UserManager.GetUserName(User);
+
+    var customer = await CustomerController.getCustomerByEmail(email);
     
+    var customerC = ViewBag.customer;
+    var cstmer = JsonSerializer.Serialize(customerC);
 
-    Customer customer = await CustomerController.getCustomerByEmail(email);
-    System.Console.WriteLine(customer.id);
+    @* var buildingList = await ProductsController.getBuildingListForCustomer(customer.id); *@
 
-    var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
+    var buildingList = ViewBag.buildingList;
+    var buildingsforCustomer = JsonSerializer.Serialize(buildingList);
 }
 <div class="row">
 
-    <div class="col-md-2">
-        <ul>
-        @{
+    <div class="col-md-2" id="building-div">
+         <ul id="building-list">
+        @* @{
             int i = 0;
             foreach(Building building in buildingList)
-            {   string buildingId = $"building{i}";
-                string buildingId2 = $"{buildingId}";
-                <li>Building at : @building.address_of_the_building </li>
+             {  string buildingId = $"building{i}"; 
+                string buildingId2 = $"{buildingId}"; 
+                <li class="building">Building at : @building.address_of_the_building </li>
                 i ++ ;
             }
-        }
-        </ul>
+        } *@
+        </ul> 
     </div>
     <div class="col-md-2">
 
@@ -44,6 +59,7 @@
 
     </div>
     <div class="col-md-4" id="information-display">
+        <h5>Your Information</h5>
         <ul>
             <li>@customer.company_name</li>
             <li>address : @customer.company_headquarter_address</li>
@@ -56,13 +72,37 @@
     </div>
 </div>
 <script>
+   
+    var customerclass = JSON.parse('@cstmer'.replace(/&quot;/g,'"'));
 
-    
+    console.log(customerclass);
 
+    var buildingList = JSON.parse('@buildingsforCustomer'.replace(/&quot;/g,'"'));
+
+    console.log(buildingList);
+
+    function populateBuildingDiv(){
+
+        $.each(buildingList, function(i, building){
+            var idString = `building-${i}`;
+            $(`<li class="building-list-element" id=${idString}>${building.address_of_the_building}</li>`).appendTo("#building-list");
+        });
+    }
 
     $(function(){
-        $(".building").click(function(){
-            $('.building').css("color", "blue")
+       
+        populateBuildingDiv();
+
+        // eventlisteners determined dinamically for the buildings
+        $.each(buildingList,function(i,building){
+            var ListId = `#building-${i}`;
+            // on click color will change
+            $(ListId).click(function(){
+                //change the text back to black
+                $(".building-list-element").css("color", "black")
+                //color the selected item
+                $(ListId).css("color", "blue")
+        })
 
         });
 
