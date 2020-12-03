@@ -99,6 +99,8 @@
     //parse elevatorList from json to be able to work with it
     var elevatorList = JSON.parse('@elevatorsForCustomer'.replace(/&quot;/g,'"'));
 
+
+    //populate the divs
     function populateBuildingDiv(){
         //prepend a title to the section
         $("<h6>Buildings</h6>").prependTo("#building-div");
@@ -180,6 +182,41 @@
 
     };
 
+    // event handlers
+    function elevatorEvents(){
+        $.each(elevatorList,function(i,elevator){
+            var BListId = `#elevator-${i}`;
+            // on click color will change
+            $(BListId).click(function(){
+                //change the text back to black
+                $(".elevator-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
+                //color the selected item
+                $(BListId).css({"color":"blue", "background-color":"CornflowerBlue"})
+                //display information in information div
+                $("#information-display")
+                .html("<h5>Elevator Information</h5>"+
+                   "<ul>" +
+                        `<li>number : ${elevator.id}</li>` +
+                        `<li>in column : ${elevator.column_id}</li>` +
+                        `<li>building type: ${elevator.type_of_building}</li>` +
+                        `<li>model: ${elevator.model}</li>` +
+                        `<li>status : ${elevator.status}</li>` +
+                        `<li>last inspection : ${elevator.last_inspection_date}</li>` +
+                        `<li>certificate : ${elevator.inspection_certificate}</li>` +
+                        `<li>information: ${elevator.information}</li>` +
+                        `<li>notes: ${elevator.notes}</li>` +
+                        `<li>comissioned on : ${elevator.commissioning_date}</li>` +
+                   "</ul>"   
+                );
+                //store elevator Id 
+                var elevatorId = elevator.id;
+                console.log(elevatorId);
+                
+                
+
+            })
+        });
+    };
     function ColumnEvents(){
        $.each(columnList,function(i,column){
             var BListId = `#column-${i}`;
@@ -206,6 +243,7 @@
                 var columnId = column.id;
                 console.log(columnId);
                 populateElevatorDiv(columnId);
+                elevatorEvents();
 
             })
         });                
@@ -253,10 +291,11 @@
 
     //DOM READY
     $(function(){
+        $(".elevator-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
         $("#column-title").hide();
         $("#batterie-title").hide();
         $('#elevator-title').hide();
-        $("#information-display").css("background-color","mistyRose");
+        $("#information-display").css({"background-color":"mistyRose"});
         populateBuildingDiv();
 
         // eventlisteners determined dinamically for the buildings
