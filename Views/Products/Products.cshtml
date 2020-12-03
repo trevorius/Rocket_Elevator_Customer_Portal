@@ -59,11 +59,13 @@
         </ul>
     </div>
     <div class="col-md-2" id="column-div">
+        <h6 id="column-title">Columns</h6>
         <ul id="column-list">
        
         </ul>
     </div>
     <div class="col-md-2" id="elevator-div">
+        <h6 id="elevator-title">Elevators</h6>
         <ul id="elevator-list">
        
         </ul>
@@ -97,6 +99,17 @@
     //parse elevatorList from json to be able to work with it
     var elevatorList = JSON.parse('@elevatorsForCustomer'.replace(/&quot;/g,'"'));
 
+    function populateBuildingDiv(){
+        //prepend a title to the section
+        $("<h6>Buildings</h6>").prependTo("#building-div");
+
+        //each building gest its list item
+        $.each(buildingList, function(i, building){
+            var idString = `building-${i}`;
+            $(`<li class="building-list-element" id=${idString}>${building.address_of_the_building}</li>`)
+                .appendTo("#building-list");
+        });
+    };
     function populateBatterieDiv(buildingId){
         //prepend a title to the section
         $("#batterie-title").show(500);
@@ -119,22 +132,131 @@
                 .appendTo("#batterie-list");
         });
     };
-
-
-    function populateBuildingDiv(){
+    function populateColumnDiv(batterieId){
         //prepend a title to the section
-        $("<h6>Buildings</h6>").prependTo("#building-div");
-
-        //each building gest its list item
-        $.each(buildingList, function(i, building){
-            var idString = `building-${i}`;
-            $(`<li class="building-list-element" id=${idString}>${building.address_of_the_building}</li>`)
-                .appendTo("#building-list");
+        $("#column-title").show(500);
+        //remove all previous list elements
+        $(".column-list-element").remove();
+        // reduce the column list to what is needed 
+        var columnForBatterie = [];
+        $.each(columnList, function(i,column){
+            console.log(column)
+            if (column.battery_id == batterieId)
+            {
+                columnForBatterie.push(column);
+            }
+        });
+        console.log(columnForBatterie)
+        // add each column from final list to displayed list
+        $.each(columnForBatterie, function(i, column){
+            var idString = `column-${i}`;
+            $(`<li class="column-list-element" id=${idString}>number : ${column.id},</br> in batterie : ${column.battery_id}</li>`)
+                .appendTo("#column-list");
         });
     };
+    function populateElevatorDiv(columnId){
+            
+        //prepend a title to the section
+        $("#elevator-title").show(500);
+        //remove all previous list elements
+        $(".elevator-list-element").remove();
+        // reduce the column list to what is needed 
+        var elevatorForColumn = [];
+        $.each(elevatorList, function(i, elevator){
+            console.log(elevator)
+            if (elevator.column_id == columnId)
+            {
+                elevatorForColumn.push(elevator);
+            }
+        });
+        console.log(elevatorForColumn)
+        // add each column from final list to displayed list
+        $.each(elevatorForColumn, function(i, elevator){
+            var idString = `elevator-${i}`;
+            $(`<li class="elevator-list-element" id=${idString}>number : ${elevator.id},</br> in column : ${elevator.column_id}</li>`)
+                .appendTo("#elevator-list");
+        });
+   
+
+    };
+
+    function ColumnEvents(){
+       $.each(columnList,function(i,column){
+            var BListId = `#column-${i}`;
+            // on click color will change
+            $(BListId).click(function(){
+                //change the text back to black
+                $(".column-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
+                //color the selected item
+                $(BListId).css({"color":"blue", "background-color":"CornflowerBlue"})
+                //display information in information div
+                $("#information-display")
+                .html("<h5>Column Information</h5>"+
+                   "<ul>" +
+                        `<li>number : ${column.id}</li>` +
+                        `<li>in battery : ${column.battery_id}</li>` +
+                        `<li>building type: ${column.type_of_building}</li>` +
+                        `<li>status : ${column.status}</li>` +
+                        `<li>number of floors served : ${column.number_of_floors_served}</li>` +
+                        `<li>information: ${column.information}</li>` +
+                        `<li>notes: ${column.notes}</li>` +
+                   "</ul>"   
+                );
+                //store column Id to call api
+                var columnId = column.id;
+                console.log(columnId);
+                populateElevatorDiv(columnId);
+
+            })
+        });                
+    }
+    function batteriEvents(){
+        $.each(batterieList,function(i,batterie){
+            var BListId = `#batterie-${i}`;
+            // on click color will change
+            $(BListId).click(function(){
+                //change the text back to black
+                $(".batterie-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
+                //color the selected item
+                $(BListId).css({"color":"blue", "background-color":"CornflowerBlue"})
+                //display information in information div
+                $("#information-display")
+                .html("<h5>Battery Information</h5>"+
+                   "<ul>" +
+                        `<li>number : ${batterie.id}</li>` +
+                        `<li>in building : ${batterie.building_id}</li>` +
+                        `<li>building type: ${batterie.type_of_building}</li>` +
+                        `<li>status : ${batterie.status}</li>` +
+                        `<li>Technician id : ${batterie.employee_id}</li>` +
+                        `<li>information: ${batterie.information}</li>` +
+                        `<li>notes: ${batterie.notes}</li>` +
+                        `<li>last inspection: ${batterie.last_inspection_date}</li>` +
+
+
+                   "</ul>"   
+                );
+
+                //empty irrelevent fields
+                $(".elevator-list-element").remove();
+                $("#elevator-title").hide();
+
+                //store batterie Id to call api
+                var batteriId = batterie.id;
+                console.log(batteriId);
+                populateColumnDiv(batteriId);
+                ColumnEvents();
+
+            })
+        });                
+    }
+
+
     //DOM READY
     $(function(){
-       $("#batterie-title").hide();
+        $("#column-title").hide();
+        $("#batterie-title").hide();
+        $('#elevator-title').hide();
+        $("#information-display").css("background-color","mistyRose");
         populateBuildingDiv();
 
         // eventlisteners determined dinamically for the buildings
@@ -143,9 +265,9 @@
             // on click color will change
             $(ListId).click(function(){
                 //change the text back to black
-                $(".building-list-element").css("color", "black")
+                $(".building-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
                 //color the selected item
-                $(ListId).css("color", "blue")
+                $(ListId).css({"color":"blue", "background-color":"CornflowerBlue"})
                 //display information in information div
                 $("#information-display")
                 .html("<h5>Building Information</h5>"+
@@ -158,15 +280,20 @@
                         `<li>Technician email : ${building.technical_contact_phone_for_the_building}</li>` +
                    "</ul>"   
                 );
+                //empty irrelevent fields
+                $(".column-list-element").remove();
+                $("#column-title").hide();
+                $(".elevator-list-element").remove();
+                $("#elevator-title").hide();
+
+
                 //store Buidling Id to call api
                 var buildingId = building.id;
                 console.log(buildingId);
                 populateBatterieDiv(buildingId);
-
-
-        })
-
+                batteriEvents();
+        
+            })
         });
-
     }); 
 </script>
