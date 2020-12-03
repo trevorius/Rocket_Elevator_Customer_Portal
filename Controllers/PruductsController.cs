@@ -93,9 +93,18 @@ namespace CustomerPortal.Controllers
             string email = User.Identity.Name;
             Customer customer = await CustomerController.getCustomerByEmail(email);
             ViewBag.customer = customer ;
-
+            // create a list of buildings for customer and stor in viewbag
             var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
             ViewBag.buildingList = buildingList;
+            // creqte a list of batteries and store in Viewbag
+            var batteryList = await ProductsController.getBatteryListForBuilding(customer.id);
+            ViewBag.batteryList = batteryList;
+            // create a list od columns and store in Viewbag
+            var columnList = await ProductsController.getColumnListForBattery(customer.id);
+            ViewBag.columnList = columnList;
+            // create a list of Elevators and store in Viewbag
+            var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
+            ViewBag.elevatorList = elevatorList;
 
 
             System.Console.WriteLine(email);

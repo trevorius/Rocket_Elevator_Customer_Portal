@@ -9,7 +9,7 @@ namespace CustomerPortal.Models
     {
         private DateTime _date = DateTime.Now;
 
-        public long Id { get; set; }
+        public long id { get; set; }
         public string type_of_building { get; set; }
         public int number_of_floors_served { get; set; }
         public string status { get; set; }

@@ -25,39 +25,50 @@
     string email = UserManager.GetUserName(User);
 
     var customer = await CustomerController.getCustomerByEmail(email);
-    
+    @* get customer information and convert ot json *@
     var customerC = ViewBag.customer;
     var cstmer = JsonSerializer.Serialize(customerC);
 
     @* var buildingList = await ProductsController.getBuildingListForCustomer(customer.id); *@
 
+    @* get buildinglist and convert to json  *@
     var buildingList = ViewBag.buildingList;
     var buildingsforCustomer = JsonSerializer.Serialize(buildingList);
+    @* get batterielist and convert ot json *@
+    var batterieList = ViewBag.batteryList;
+    var batteriesForCustomer = JsonSerializer.Serialize(batterieList);
+    @* get column list and convert to json *@
+    var columnList = ViewBag.columnList;
+    var columnsForCustomer = JsonSerializer.Serialize(columnList);
+    @* get elevator list and convert to json *@
+    var elevatorList = ViewBag.elevatorList;
+    var elevatorsForCustomer = JsonSerializer.Serialize(elevatorList);
+
 }
 <div class="row">
 
     <div class="col-md-2" id="building-div">
          <ul id="building-list">
-        @* @{
-            int i = 0;
-            foreach(Building building in buildingList)
-             {  string buildingId = $"building{i}"; 
-                string buildingId2 = $"{buildingId}"; 
-                <li class="building">Building at : @building.address_of_the_building </li>
-                i ++ ;
-            }
-        } *@
+       
         </ul> 
     </div>
-    <div class="col-md-2">
-
+    <div class="col-md-2" id="batterie-div">
+        <h6 id="batterie-title">Batteries</h6>
+        <ul id="batterie-list">
+       
+        </ul>
     </div>
-    <div class="col-md-2">
-
+    <div class="col-md-2" id="column-div">
+        <ul id="column-list">
+       
+        </ul>
     </div>
-    <div class="col-md-2">
-
+    <div class="col-md-2" id="elevator-div">
+        <ul id="elevator-list">
+       
+        </ul>
     </div>
+    @* defalt information is customer information *@
     <div class="col-md-4" id="information-display">
         <h5>Your Information</h5>
         <ul>
@@ -72,25 +83,58 @@
     </div>
 </div>
 <script>
-   
+    
+    //parse customer info from json to be able to work with it
     var customerclass = JSON.parse('@cstmer'.replace(/&quot;/g,'"'));
-
     console.log(customerclass);
-
+    //parse building list from json to be able to work with it 
     var buildingList = JSON.parse('@buildingsforCustomer'.replace(/&quot;/g,'"'));
-
     console.log(buildingList);
+    //parse batterie list from json to be able to work with it
+    var batterieList = JSON.parse('@batteriesForCustomer'.replace(/&quot;/g,'"'));
+    //parse columnList from json to be able to work with it
+    var columnList = JSON.parse('@columnsForCustomer'.replace(/&quot;/g,'"'));
+    //parse elevatorList from json to be able to work with it
+    var elevatorList = JSON.parse('@elevatorsForCustomer'.replace(/&quot;/g,'"'));
+
+    function populateBatterieDiv(buildingId){
+        //prepend a title to the section
+        $("#batterie-title").show(500);
+        //remove all previous list elements
+        $(".batterie-list-element").remove();
+        // reduce the batterie list to what is needed 
+        var batterieForBuilding = [];
+        $.each(batterieList, function(i,batterie){
+            console.log(batterie)
+            if (batterie.building_id == buildingId)
+            {
+                batterieForBuilding.push(batterie);
+            }
+        });
+        console.log(batterieForBuilding)
+        // add each batterie from final list to displayed list
+        $.each(batterieForBuilding, function(i, batterie){
+            var idString = `batterie-${i}`;
+            $(`<li class="batterie-list-element" id=${idString}>number : ${batterie.id},</br> op certificate : ${batterie.operations_certificate}</li>`)
+                .appendTo("#batterie-list");
+        });
+    };
+
 
     function populateBuildingDiv(){
+        //prepend a title to the section
+        $("<h6>Buildings</h6>").prependTo("#building-div");
 
+        //each building gest its list item
         $.each(buildingList, function(i, building){
             var idString = `building-${i}`;
-            $(`<li class="building-list-element" id=${idString}>${building.address_of_the_building}</li>`).appendTo("#building-list");
+            $(`<li class="building-list-element" id=${idString}>${building.address_of_the_building}</li>`)
+                .appendTo("#building-list");
         });
-    }
-
+    };
+    //DOM READY
     $(function(){
-       
+       $("#batterie-title").hide();
         populateBuildingDiv();
 
         // eventlisteners determined dinamically for the buildings
@@ -102,6 +146,24 @@
                 $(".building-list-element").css("color", "black")
                 //color the selected item
                 $(ListId).css("color", "blue")
+                //display information in information div
+                $("#information-display")
+                .html("<h5>Building Information</h5>"+
+                   "<ul>" +
+                        `<li>address : ${building.address_of_the_building}</li>` +
+                        `<li>building administrator : ${building.full_name_of_the_building_administrator}</li>` +
+                        `<li>administrator phone : ${building.phone_number_of_the_building_administrator}</li>` +
+                        `<li>Technical contact : ${building.full_name_of_the_technical_contact_for_the_building}</li>` +
+                        `<li>Technician phone : ${building.technical_contact_email_for_the_building}</li>` +
+                        `<li>Technician email : ${building.technical_contact_phone_for_the_building}</li>` +
+                   "</ul>"   
+                );
+                //store Buidling Id to call api
+                var buildingId = building.id;
+                console.log(buildingId);
+                populateBatterieDiv(buildingId);
+
+
         })
 
         });
