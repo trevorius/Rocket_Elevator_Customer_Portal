@@ -43,6 +43,7 @@ namespace CustomerPortal.Controllers
         }
         [Authorize]
         [HttpPost]
+        // post updated user from view
         public async Task<IActionResult> ChangeInfo(Customer updatedCustomer)
         {
         System.Console.WriteLine(updatedCustomer);
@@ -58,7 +59,7 @@ namespace CustomerPortal.Controllers
                                     "application/json");
 
         System.Console.WriteLine(content);
-
+        // update user 
         var client = new HttpClient();
         var response = await client.PutAsync(ApiURL("Customers/", updatedCustomer.id), content);
 
@@ -78,8 +79,8 @@ namespace CustomerPortal.Controllers
         {  
             // define base variables for final conection string 
             string URLreturn ;
-            string baseUrl = "http://localhost:5501/api/";
-            // string baseUrl = "https://rocket-elevators-status.azurewebsites.net/api/";
+            // string baseUrl = "http://localhost:5501/api/";
+            string baseUrl = "https://rocket-elevators-status.azurewebsites.net/api/";
 
             // logic for the return string so it correspondes to api end points
             if(variable == null)
