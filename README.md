@@ -9,25 +9,25 @@ by following the links in he nav bar the customer can reach the product manageme
 ## Registration
 registration is limmitted to customers by email from the mysql database: here are some addresses that can be added  to the registry : 
 
-zetta.volkman@bailey.org
-lashawn@simonis.org
-tanner@wisozk.org
-burt.block@wehner.info
-leonila@prohaska.org
-colby.cremin@bashirian.name
-clement.mohr@wuckert.com
-ara_bogisich@zemlak.name
-bettina@gislason-rolfson.net
-bud@pouros-runte.com
-dean@sauer.name
-treva@oberbrunner.co
-phung.carter@bins.org
-lillie.mosciski@stroman.net
-mattie@emmerich.info
-yasmine@bednar.io
-deangelo@schinner.io
-wally@graham-fritsch.biz
-stevie@metz.biz 
+- zetta.volkman@bailey.org
+- lashawn@simonis.org
+- tanner@wisozk.org
+- burt.block@wehner.info
+- leonila@prohaska.org
+- colby.cremin@bashirian.name
+- clement.mohr@wuckert.com
+- ara_bogisich@zemlak.name
+- bettina@gislason-rolfson.net
+- bud@pouros-runte.com
+- dean@sauer.name
+- treva@oberbrunner.co
+- phung.carter@bins.org
+- lillie.mosciski@stroman.net
+- mattie@emmerich.info
+- yasmine@bednar.io
+- deangelo@schinner.io
+- wally@graham-fritsch.biz
+- stevie@metz.biz 
 
 
 
