@@ -1,0 +1,93 @@
+@using System;
+@using CustomerPortal.Controllers;
+@using Microsoft.AspNetCore.Identity;
+
+@using System.Collections.Generic;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@using System.Threading.Tasks;
+@using System.Diagnostics;
+@using System.Web;
+
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@model CustomerPortal.Models.Customer; 
+
+@{
+    string email = UserManager.GetUserName(User);
+
+    var customer = await CustomerController.getCustomerByEmail(email);
+    @* // get customer information and convert ot json  *@
+    var customerC = ViewBag.customer;
+    var cstmer = JsonSerializer.Serialize(customer);
+
+}
+
+
+ <div class="row">
+                    <div class="col-md-6">
+                @using (Html.BeginForm( "changeInfo", "Customer", FormMethod.Post))
+                {
+
+                        <div class="row">
+                            <th colspan="2" align="center">Your information</th>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Id: </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.id, new { @readonly="readonly" } )
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">company name </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.company_name)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">Address </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.company_headquarter_address)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">contact name </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.full_name_company_contact)
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">phone : </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.company_contact_phone)
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">email: </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.email_company_contact)
+                            </div>
+
+                        </div>
+                        
+
+                        <div class="row">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-8"><input type="submit" value="UPDATE"class="btn btn-lg btn-outline-primary m-auto"/></div>
+                        </div>
+                }
+                    </div>
+           
+        </div>
+
+<script>
+        //parse customer info from json to be able to work with it
+    var customer = JSON.parse('@cstmer'.replace(/&quot;/g,'"'));
+    console.log(customer);
+
+</script>
+<script src="~/js/changeInfo.js" asp-append-version="true"></script>

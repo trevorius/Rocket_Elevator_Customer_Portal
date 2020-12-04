@@ -52,6 +52,7 @@ namespace CustomerPortal.Controllers
             return View();
         }
         //Post from product management
+        // [Authorize]
         [HttpPost]
         public async Task<IActionResult> intervention(Intervention predefinedIntervention)
         {
@@ -60,13 +61,7 @@ namespace CustomerPortal.Controllers
             long? batteryID = predefinedIntervention.battery_id;
             long? columnID = predefinedIntervention.column_id;
             long? elevatorID = predefinedIntervention.elevator_id;
-            System.Console.WriteLine(customerID);
-            System.Console.WriteLine(buildingID);
-            System.Console.WriteLine(batteryID);
-            System.Console.WriteLine(columnID);
-            System.Console.WriteLine(elevatorID);
-            
-
+           
             // print intervention form data
             System.Console.WriteLine("-------------------------------------------------------------");    
             System.Console.WriteLine(predefinedIntervention.author);

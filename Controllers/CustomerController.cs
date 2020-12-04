@@ -10,16 +10,70 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+//using Newtonsoft.Json;
+
+using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 
 
 
 
 namespace CustomerPortal.Controllers
 {
-    public class CustomerController
+    public class CustomerController : Controller
 
     {
-        // Api call Url so only one line has to be changed when we go remote
+        [Authorize]
+        public async Task<IActionResult> ChangeInfo()
+        {
+             string email = User.Identity.Name;
+            Customer customer = await CustomerController.getCustomerByEmail(email);
+            ViewBag.customer = customer ;
+            
+
+            System.Console.WriteLine(email);
+            // ViewBag.email = getLoggedInUserEmail();
+
+            return View();
+        }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ChangeInfo(Customer updatedCustomer)
+        {
+        System.Console.WriteLine(updatedCustomer);
+
+        var updatedCustomerJson = JsonSerializer.Serialize(updatedCustomer);
+
+        
+
+        //var content2 = JsonConvert.SerializeObject(updatedCustomer);
+        System.Console.WriteLine(updatedCustomerJson);
+
+        var content = new StringContent(updatedCustomerJson, Encoding.UTF8, 
+                                    "application/json");
+
+        System.Console.WriteLine(content);
+
+        var client = new HttpClient();
+        var response = await client.PutAsync(ApiURL("Customers/", updatedCustomer.id), content);
+
+        System.Console.WriteLine(response);
+
+
+
+            return View();
+        }
+  
+
+
+
+
+        // Api call Url so only one line has to be changed when we go to production
         public static string ApiURL(string parameter,long? variable = null)
         {  
             // define base variables for final conection string 

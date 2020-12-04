@@ -83,7 +83,8 @@
                 <li>technical contact : @customer.full_name_service_technical_authority</li>
                 <li>tec phone : @customer.technical_authority_phone</li>
                 <li>tec email : @customer.technical_manager_email</li>
-            </ul>    
+            </ul> 
+            <a class="btn btn-outline-danger m-auto" asp-area="" asp-controller="Customer" asp-action="ChangeInfo">Change information</a>
         </div>
         <div class="row">
                 @using (Html.BeginForm( "intervention", "Products", FormMethod.Post))
