@@ -180,12 +180,9 @@
     
     customerList = [];
     console.log(customerList);
-    //var buildingList = <%= raw Building.all.to_json %>;
     console.log(buildingList);
-    //var columnList = <%= raw Column.all.to_json %>;
     console.log(columnList);
-    // var elevatorList = <%= raw Elevator.all.to_json%>;
-    var employeeList = [];//<%= raw Employee.all.to_json%>;
+    var employeeList = [];
     var batteryList = batterieList;
     
     //console.log(customerList[0].id);
@@ -380,12 +377,7 @@
 
         }
 
-        //logic to display intervention link
-        //$('#intervention-link').hide();
-
-            /*if (IsUserAnEmployee()){
-                $('#intervention-link').show();
-        }*/
+       
         
 
 
@@ -399,11 +391,7 @@
             
         
 
-           /* <% 
-            p "________________________________________"
-            pp current_admin_user 
-            p "________________________________________"
-            %>*/
+           
             console.log("customer : ")
             console.log(customerclass)
 
@@ -413,21 +401,7 @@
 
 
             
-            //createSelector("#customer-id", customerList);
-            //createSelector("#employee-ID", employeeList);
-
-            // customer selection event handler
-            /*$("#customer-id").on('change',function(){
-                $("#building-ID").children('option:not(:first)').remove();
-                //display next field
-                $('.building').show(500);
             
-                customerId =  $("#customer-id").val();
-                //getlistOfBuildings(customerId,"#building-ID");
-                getBuildingsThroughajax( customerId )
-            })*/
-
-
             //building selection event handler
             $("#building-ID").on('change', function(){
                 $("#batterie-ID").children('option:not(:first)').remove();
