@@ -1,0 +1,504 @@
+﻿@using System;
+@using CustomerPortal.Controllers;
+@using Microsoft.AspNetCore.Identity;
+
+@using System.Collections.Generic;
+@using System.Net.Http;
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@using System.Threading.Tasks;
+@using System.Diagnostics;
+@using System.Web;
+
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+
+
+@{
+    ViewData["Title"] = "Intervention Request";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+<form id="new-intervention" method="post" action="intervention" enctype="multipart/form-data">
+    <fieldset>
+
+        <div class="row author col-sm-8 col-md-5 col-lg-4 ml-9 mr-7 ">
+            <label for="author-id" class="form-label"> Author of intervention : </label>
+            <input  class="form-control pointer hide-1" type="number" id="author-id" name="author" readonly >
+            <input class="form-control  " type="text" id="author-name" readonly placeholder="">
+
+        </div>
+
+        <div class="row Customer ml-9 mr-7">
+            <div class="customer col-sm-8 col-md-5 col-lg-4 ">
+            <label class="form-label" for="customer-id"> Customer </label>
+            <input required readonly class="form-control pointer" id="customer-id" type="number" name="customer_id">
+           
+                
+            
+
+                
+            </select>
+
+            </div>
+        </div>
+        <div class="row Building-details ml-9 mr-7">
+            <div class="building col-md-3" id="building">
+            <label class="form-label" for="building-ID"> Building </label>
+            <select required class="form-control pointer" id="building-ID" name="building_id">            
+                <option value="">--- Select ---</option>
+                
+            </select>
+            </div>
+            <div class="batterie col-md-3 hide-1">
+            <label class="form-label " for="batterie-ID"> Batterie ID number </label>
+            <select class="form-control pointer" id="batterie-ID" name="battery_id">
+                <option value="">NULL</option>
+            </select>
+            </div>
+            <div class="column col-md-3 hide-1">
+            <label class="form-label" for="column-ID"> Column ID number </label>
+            <select class="form-control pointer" id="column-ID" name="column_id">
+                <option value="">NULL</option>
+                
+            </select>
+
+            </div>
+            <div class="elevator col-md-3 hide-1">
+            <label class="form-label" for="elevator-ID"> Elevator ID number </label>
+            <select class="form-control pointer" id="elevator-ID" name="elevator_id">
+                <option value="">NULL</option>
+                
+            </select>
+            </div>
+        </div>
+        <div class="hide-1 row intervention mr-7 ml-9 ">
+            <div class="employee hide-2 col-lg-4">
+            <label class="form-label" for="employee-ID"> Employee ID number </label>
+            <select class="form-control pointer" id="employee-ID" name="employee_id">
+                <option value="">NULL</option>
+                
+            </select>
+            </div>
+        </div>
+        <div class=" row intervention hide-1 description col-lg-8 mr-7 ml-9 ">
+            <label class="form-label" for="description-ID"> Description </label>
+            <textarea required maxlength="10000" rows="8" class="form-control" id="description-ID" name="report"></textarea>
+        </div>
+    </fieldset>
+
+    <div class="row ml-9 mr-7 ">
+        <div class="col-md-5 ml-9 ">
+            <button type="submit" class="btn btn-primary " id="create-intervention"><i class="fa fa-check"></i> Submit intervention </button>
+        </div>
+    </div>
+
+</form>
+@{
+    string email = UserManager.GetUserName(User);
+
+    var customer = await CustomerController.getCustomerByEmail(email);
+    @* get customer information and convert ot json *@
+    var customerC = ViewBag.customer;
+    var cstmer = JsonSerializer.Serialize(customerC);
+
+    @* var buildingList = await ProductsController.getBuildingListForCustomer(customer.id); *@
+
+    @* get buildinglist and convert to json  *@
+    var buildingList = ViewBag.buildingList;
+    var buildingsforCustomer = JsonSerializer.Serialize(buildingList);
+    @* get batterielist and convert ot json *@
+    var batterieList = ViewBag.batteryList;
+    var batteriesForCustomer = JsonSerializer.Serialize(batterieList);
+    @* get column list and convert to json *@
+    var columnList = ViewBag.columnList;
+    var columnsForCustomer = JsonSerializer.Serialize(columnList);
+    @* get elevator list and convert to json *@
+    var elevatorList = ViewBag.elevatorList;
+    var elevatorsForCustomer = JsonSerializer.Serialize(elevatorList);
+
+    @* get preselected elements from viewbag *@
+
+    
+     long? BuildingID = ViewBag.buildingID;
+     long? BatterieID = ViewBag.batteryID;
+    long?  ColumnID = ViewBag.columnID;
+    long? ElevatorID = ViewBag.elevatorID;
+    
+    if(BuildingID == null){
+        BuildingID = 0;
+    }
+    if(BatterieID == null){
+        BatterieID = 0;
+    }
+    if(ColumnID == null){
+        ColumnID = 0;
+    }
+    if(ElevatorID == null){
+        ElevatorID = 0;
+    }
+
+    var newInterventionUrl = ViewBag.interventionUrl;
+
+}
+
+<script>
+
+
+//variables
+    //parse customer info from json to be able to work with it
+    var customerclass = JSON.parse('@cstmer'.replace(/&quot;/g,'"'));
+    console.log(customerclass);
+    //parse building list from json to be able to work with it 
+    var buildingList = JSON.parse('@buildingsforCustomer'.replace(/&quot;/g,'"'));
+    console.log(buildingList);
+    //parse batterie list from json to be able to work with it
+    var batterieList = JSON.parse('@batteriesForCustomer'.replace(/&quot;/g,'"'));
+    //parse columnList from json to be able to work with it
+    var columnList = JSON.parse('@columnsForCustomer'.replace(/&quot;/g,'"'));
+    //parse elevatorList from json to be able to work with it
+    var elevatorList = JSON.parse('@elevatorsForCustomer'.replace(/&quot;/g,'"'));
+
+    var BuildingID = @BuildingID
+    var BatterieID = @BatterieID
+    var ColumnID = @ColumnID
+    var ElevatorID = @ElevatorID
+    
+    var postInterventionURL = '@newInterventionUrl';
+    
+    console.log(BuildingID);
+    console.log(BatterieID);
+    console.log(ElevatorID);
+    console.log(ColumnID);
+
+
+    var customerList;
+
+    
+    customerList = [];
+    console.log(customerList);
+    //var buildingList = <%= raw Building.all.to_json %>;
+    console.log(buildingList);
+    //var columnList = <%= raw Column.all.to_json %>;
+    console.log(columnList);
+    // var elevatorList = <%= raw Elevator.all.to_json%>;
+    var employeeList = [];//<%= raw Employee.all.to_json%>;
+    var batteryList = batterieList;
+    
+    //console.log(customerList[0].id);
+
+//end variables
+//functions
+    function IsUserAnEmployee(){
+            // get user information
+            user = customerclass;
+            console.log(user)
+            if (user == null){
+                return false;
+            }
+            //cmompare user to employees
+            for(var i = 0 ; i < Object.keys(employeeList).length; i++){
+                if (user.email == employeeList[i].email){
+                    console.log("employee")
+                    console.log(employeeList[i].id)
+                    
+                    return true;
+                }
+            }
+            return false;
+        };
+
+    //function to get the author information:
+    function getAuthorValue(){
+        user = customerclass
+        console.log(user)
+        $("#author-name").val( user.full_name_company_contact);
+        $("#author-id").val(user.admin_user_id);
+
+        return true;
+
+        /*if (user == null){
+            return false;
+        }
+        for(var i = 0 ; i < Object.keys(employeeList).length; i++){
+            if (user.email == employeeList[i].email){
+                $("#author-id").val(employeeList[i].id)
+                console.log("employee")
+                console.log(employeeList[i].id)
+                
+                $("#author-name").val( employeeList[i].first_name + " " + employeeList[i].last_name)
+            return true;
+            }
+        }
+        return false;*/
+    }
+
+
+    //function to get batterie, column and elevator lists
+    function getListFromPreviousID (selector, previousID,list){
+        //iterate through list
+        for (var i = 0; i< Object.keys(list).length; i++){
+            var val = list[i].id
+            //select desired elements
+            if (list[i].building_id == previousID || list[i].column_id == previousID || list[i].battery_id == previousID){
+                $(selector)
+                    .append('<option value=' + val + '>' + val + '</option>');
+            }
+        
+        }
+
+    }
+
+
+    //function to create the building selector
+    function getlistOfBuildings(customerID,selector){
+        if (BuildingID != 0){
+            $(selector)
+                    .prepend('<option value=' + BuildingID + '>' + BuildingID + '</option>');
+            $("#building-ID").val(BuildingID);
+            $('.batterie').show(500);
+            $('.intervention').show(500);
+
+        }
+        //iterate list of buildings
+        for (var i = 0; i < Object.keys(buildingList).length; i++){
+            var val = buildingList[i].id
+            var label = val + " -> " + buildingList[i].address_of_the_building
+            //select desired buildings
+            if (buildingList[i].customer_id == customerID){
+                $(selector)
+                    .append('<option value=' + val + '>' + label + '</option>');
+            }
+        };
+
+    };
+    //create the selector form a list
+    function createSelector(selector, list){
+
+        for (var i = 0 ; i < Object.keys(list).length; i++){
+            var val = list[i].id
+            if (list == customerList){
+            var label = val + " -> " + list[i].company_name
+            }
+            else if (list == employeeList){
+            var label = val + " -> " + list[i].first_name + " " + list[i].last_name
+            }
+            $(selector)
+                .append('<option value=' + val + '>' + label + '</option>')
+            }
+    };
+
+    function getBuildingsThroughajax(id){
+        $.ajax({
+            url:"/building",
+            type: "GET",
+            dataType: "json",
+            data:{ customer: id },
+            error: function(xhr, status, error){
+                console.error('AJAX Error : ' + status + error);
+            },
+            success: function(response){
+                console.log(response)
+                var buildingsList = response["buildings"];
+                for (var i = 0 ; i < buildingsList.length; i++){
+                    var val = buildingsList[i]["id"]
+                    var label = val + " -> " +  buildingsList[i]["address_of_the_building"]
+
+                    $('#building-ID').append('<option value=' + val + '>' + label + '</option>');
+                }
+            }
+        });
+
+    }
+//end functions
+    function submitNewIntervention(){
+        $('#create-intervention').on('click', function (evt) {
+        evt.preventDefault();
+        const json = {
+            "author": parseInt($("#author-id").val()),
+            "customer_id": parseInt($("#customer-id").val()),
+            "building_id": parseInt($("#building-ID").val()),
+            "battery_id": parseInt($("#batterie-ID").val()),
+            "column_id": parseInt($("#column-ID").val()),
+            "elevator_id": parseInt($("#elevator-ID").val()),
+            "employee_id": parseInt($("#employee-ID").val()),
+            "report": $("#description-ID").val()
+          
+        }
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(json),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        
+        console.log(JSON.stringify(json));
+
+        fetch(postInterventionURL, options)
+            .then(res => res.json())
+            .then(res => console.log(res))
+            .then(res => alert("intervention form submitted"))
+            .catch(err => console.error(err));
+
+    }); 
+
+    }
+
+    $(function(){
+
+        //hide everything except customer selector
+        $(".hide-1").hide();
+        $(".hide-2").hide();
+
+        if (BatterieID != 0){
+            $("#batterie-ID")
+                    .prepend('<option value=' + BatterieID + '>' + BatterieID + '</option>');
+            $("#batterie-ID").val(BatterieID);
+            $('.column').show(500);
+            $('.intervention').show(500);
+
+        }
+        if (ColumnID != 0){
+            $("#column-ID")
+                    .prepend('<option value=' + ColumnID + '>' + ColumnID + '</option>');
+            $("#column-ID").val(ColumnID);
+            $('.column').show(500);
+            $('.elevator').show(500);
+            $('.intervention').show(500);
+
+        }
+        if (ElevatorID != 0){
+            $("#elevator-ID")
+                    .prepend('<option value=' + ElevatorID + '>' + ElevatorID + '</option>');
+            $("#elevator-ID").val(ElevatorID);
+            $('.elevator').show(500);
+            $('.intervention').show(500);
+
+        }
+
+        //logic to display intervention link
+        //$('#intervention-link').hide();
+
+            /*if (IsUserAnEmployee()){
+                $('#intervention-link').show();
+        }*/
+        
+
+
+
+        console.log(getAuthorValue())
+
+        if (getAuthorValue()){
+
+            
+
+            
+        
+
+           /* <% 
+            p "________________________________________"
+            pp current_admin_user 
+            p "________________________________________"
+            %>*/
+            console.log("customer : ")
+            console.log(customerclass)
+
+            $("#customer-id").val(customerclass.id);
+            customerId =  $("#customer-id").val();
+            getlistOfBuildings(customerId,"#building-ID");
+
+
+            
+            //createSelector("#customer-id", customerList);
+            //createSelector("#employee-ID", employeeList);
+
+            // customer selection event handler
+            /*$("#customer-id").on('change',function(){
+                $("#building-ID").children('option:not(:first)').remove();
+                //display next field
+                $('.building').show(500);
+            
+                customerId =  $("#customer-id").val();
+                //getlistOfBuildings(customerId,"#building-ID");
+                getBuildingsThroughajax( customerId )
+            })*/
+
+
+            //building selection event handler
+            $("#building-ID").on('change', function(){
+                $("#batterie-ID").children('option:not(:first)').remove();
+                $("#column-ID").children('option:not(:first)').remove();
+                $("#elevator-ID").children('option:not(:first)').remove();
+
+
+                //display next field
+                $('.batterie').show(500);
+                $('.intervention').show(500);
+
+                $(".batterie").show(500);
+                buildingId = $("#building-ID").val();
+                getListFromPreviousID("#batterie-ID", buildingId, batteryList);
+            })
+            //batterie selection event handler
+            $("#batterie-ID").on('change', function(){
+                $("#column-ID").children('option:not(:first)').remove();
+                $("#elevator-ID").children('option:not(:first)').remove();
+
+                //display next field
+                $('.column').show(500);
+
+                $(".column").show(500);
+                batteryId = $("#batterie-ID").val();
+                getListFromPreviousID("#column-ID", batteryId, columnList);
+            })
+            //column selection event handler
+            $('#column-ID').on('change', function(){
+                $("#elevator-ID").children('option:not(:first)').remove();
+                //display next field
+                $('.elevator').show(500);
+
+                $(".elevator").show(500);
+
+                columnID = $('#column-ID').val();
+                getListFromPreviousID("#elevator-ID", columnID, elevatorList)
+            })
+            //elevator selection event handler
+            $('#elevator-ID').on('change', function(){
+                //$('.employee').show(500);
+
+            })
+            //employee selection event handler
+            $('#employee-ID').on('change', function(){
+                $('.description').show(500);
+            })
+
+            //description event handler
+            $("#description-ID").on('change', function(){
+                var intervention = {
+            author: $("#author-id").val(),
+            customer_id: $('#customer-id').val(),
+            buidling_id: $('#building-ID').val(),
+            battery_id: $('#batterie-ID').val(),
+            column_id: $('#column-ID').val(),
+            elevator_id: $('#elevator-ID').val(),
+            employeeId: $('#employee-ID').val(),
+            report: $("#description-ID").val()
+            }
+            console.log(intervention)
+            })
+        }
+        else{
+            $('#new-intervention').hide();
+            $('#login-message').show();
+        }
+
+        submitNewIntervention();
+    });
+
+    
+</script>

@@ -27,67 +27,7 @@ namespace CustomerPortal.Controllers
 {
     public class ProductsController : Controller
     {
-        // private readonly UserManager<IdentityUser> _userManager;
-        // private readonly SignInManager<IdentityUser> _signInManager;
-        
-        // public async Task<string> getLoggedInUserEmail(IdentityUser user)
-        // {
-        //     var email = await _userManager.GetEmailAsync(user);
-        //     return email;
-        // }
-
-
-
-        //         public class UserRepository : IUserRepository
-        // {
-        //     private readonly IHttpContextAccessor _httpContextAccessor;
-
-        //     public UserRepository(IHttpContextAccessor httpContextAccessor)
-        //     {
-        //         _httpContextAccessor = httpContextAccessor;
-        //     }
-
-        //     public void LogCurrentUser()
-        //     {
-        //         var username = _httpContextAccessor.HttpContext.User.Identity.Name;
-        //         service.LogAccessRequest(username);
-        //     }
-        // }
-
-
-        // private readonly UserManager<ApplicationUser> _userManager;
-    
-        // public ProductsController(UserManager<ApplicationUser> userManager)
-        // {
-        //     _userManager = userManager;
-        // }
-
-        // public async Task<IActionResult> getUserEmail()
-        // {
-        //     System.Web.HttpContext.Current.User.Identity.Name();
-
-        //     var userId =  User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
-        //     var userName =  User.FindFirstValue(ClaimTypes.Name); // will give the user's userName
-            
-        //     // For ASP.NET Core <= 3.1
-        //     ApplicationUser applicationUser = await _userManager.GetUserAsync(User);
-        //     string userEmail = applicationUser?.Email; // will give the user's Email
-
-        // // // For ASP.NET Core >= 5.0
-        // // var userEmail =  User.FindFirstValue(ClaimTypes.Email) // will give the user's Email
-        // }
-
-        // public static string getCurrentUserEmail()
-        // {
-        //     var name = User.identity.name; 
-            
-        //     // if (SignInManager2.IsSignedIn(User))
-        //     // {
-        //     // var userEmail = UserManager2.GetUserName(User);
-        //     // return userEmail;
-        //     // }
-        // }
-
+        [Authorize]
         public async Task<IActionResult> Products()
         {
             string email = User.Identity.Name;
@@ -111,6 +51,104 @@ namespace CustomerPortal.Controllers
             // ViewBag.email = getLoggedInUserEmail();
             return View();
         }
+        //Post from product management
+        [HttpPost]
+        public async Task<IActionResult> intervention(Intervention predefinedIntervention)
+        {
+            long? customerID = predefinedIntervention.customer_id;
+            long? buildingID = predefinedIntervention.building_id;
+            long? batteryID = predefinedIntervention.battery_id;
+            long? columnID = predefinedIntervention.column_id;
+            long? elevatorID = predefinedIntervention.elevator_id;
+            System.Console.WriteLine(customerID);
+            System.Console.WriteLine(buildingID);
+            System.Console.WriteLine(batteryID);
+            System.Console.WriteLine(columnID);
+            System.Console.WriteLine(elevatorID);
+            
+
+            // print intervention form data
+            System.Console.WriteLine("-------------------------------------------------------------");    
+            System.Console.WriteLine(predefinedIntervention.author);
+            System.Console.WriteLine("-------------------------------------------------------------");    
+
+
+            //put information in viewbag
+            ViewBag.buildingID = buildingID;
+            ViewBag.batteryID = batteryID;
+            ViewBag.columnID = columnID;
+            ViewBag.elevatorID = elevatorID;
+
+            ViewBag.interventionUrl = CustomerController.ApiURL("interventions");
+            
+            string email = User.Identity.Name;
+            Customer customer = await CustomerController.getCustomerByEmail(email);
+            ViewBag.customer = customer ;
+            // create a list of buildings for customer and stor in viewbag
+            var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
+            ViewBag.buildingList = buildingList;
+            // creqte a list of batteries and store in Viewbag
+            var batteryList = await ProductsController.getBatteryListForBuilding(customer.id);
+            ViewBag.batteryList = batteryList;
+            // create a list od columns and store in Viewbag
+            var columnList = await ProductsController.getColumnListForBattery(customer.id);
+            ViewBag.columnList = columnList;
+            // create a list of Elevators and store in Viewbag
+            var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
+            ViewBag.elevatorList = elevatorList;
+
+            // if (predefinedIntervention.author != null)
+            // {
+            //     using (var client = new HttpClient())
+            //     {
+            //         client.BaseAddress = new Uri(CustomerController.ApiURL("interventions"));
+
+            //         //HTTP POST
+            //         var postTask = client.PostAsJsonAsync<Intervention>("intervention", predefinedIntervention);
+            //         postTask.Wait();
+
+            //         var result = postTask.Result;
+            //         if (result.IsSuccessStatusCode)
+            //         {
+            //             System.Console.WriteLine("post sent");
+            //             return View();
+            //         }
+            //         ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
+
+            //         return View();
+            //     }
+
+            // }
+
+            return View();
+        }
+        [Authorize]
+        public async Task<IActionResult> intervention()
+        {
+            string email = User.Identity.Name;
+            Customer customer = await CustomerController.getCustomerByEmail(email);
+            ViewBag.customer = customer ;
+            // create a list of buildings for customer and stor in viewbag
+            var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
+            ViewBag.buildingList = buildingList;
+            // creqte a list of batteries and store in Viewbag
+            var batteryList = await ProductsController.getBatteryListForBuilding(customer.id);
+            ViewBag.batteryList = batteryList;
+            // create a list od columns and store in Viewbag
+            var columnList = await ProductsController.getColumnListForBattery(customer.id);
+            ViewBag.columnList = columnList;
+            // create a list of Elevators and store in Viewbag
+            var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
+            ViewBag.elevatorList = elevatorList;
+
+
+            return View();
+        }
+
+
+
+
+
         public static async Task<List<Building>> getBuildingListForCustomer(long id)
         {
             // connexion

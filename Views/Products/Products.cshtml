@@ -11,7 +11,7 @@
 @using System.Web;
 
 
-
+@model CustomerPortal.Models.Intervention; 
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
 
@@ -60,8 +60,7 @@
     </div>
     <div class="col-md-2" id="column-div">
         <h6 id="column-title">Columns</h6>
-        <ul id="column-list">
-       
+        <ul id="column-list">       
         </ul>
     </div>
     <div class="col-md-2" id="elevator-div">
@@ -70,18 +69,68 @@
        
         </ul>
     </div>
-    @* defalt information is customer information *@
-    <div class="col-md-4" id="information-display">
-        <h5>Your Information</h5>
-        <ul>
-            <li>@customer.company_name</li>
-            <li>address : @customer.company_headquarter_address</li>
-            <li>phone : @customer.company_contact_phone</li>
-            <li>email : @customer.email_company_contact</li>
-            <li>technical contact : @customer.full_name_service_technical_authority</li>
-            <li>tec phone : @customer.technical_authority_phone</li>
-            <li>tec email : @customer.technical_manager_email</li>
-        </ul>    
+    <div class="col-md-4" id="information section">
+        @* default information is customer information *@
+        <div class="row" id="information-display">
+            <h5>Your Information</h5>
+            <ul>
+                <li>@customer.company_name</li>
+                <li>address : @customer.company_headquarter_address</li>
+                <li>phone : @customer.company_contact_phone</li>
+                <li>email : @customer.email_company_contact</li>
+                <li>technical contact : @customer.full_name_service_technical_authority</li>
+                <li>tec phone : @customer.technical_authority_phone</li>
+                <li>tec email : @customer.technical_manager_email</li>
+            </ul>    
+        </div>
+        <div class="row">
+                @using (Html.BeginForm( "intervention", "Products", FormMethod.Post))
+                {
+                    <table cellpadding="0" cellspacing="0">
+                        <tr>
+                            <th colspan="2" align="center">intervention details</th>
+                        </tr>
+                        <tr>
+                            <td>customerId: </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.customer_id, new { @readonly="readonly" } )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>buildingId </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.building_id, new { @readonly="readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>batteryID </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.battery_id, new { @readonly="readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ColumnId: </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.column_id, new { @readonly="readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ElevatorId: </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.elevator_id, new { @readonly="readonly" })
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><input type="submit" value="Request Intervention"class="btn btn-lg btn-outline-primary m-auto"/></td>
+                        </tr>
+                    </table>
+                }
+            @* <button type="button" class="btn btn-lg btn-outline-primary m-auto">
+                Request Intervention
+            </button> *@
+        </div>
     </div>
 </div>
 <script>
@@ -99,6 +148,9 @@
     //parse elevatorList from json to be able to work with it
     var elevatorList = JSON.parse('@elevatorsForCustomer'.replace(/&quot;/g,'"'));
 
+    var batterieForBuilding = [];
+    var columnForBatterie = [];
+    var elevatorForColumn = [];
 
     //populate the divs
     function populateBuildingDiv(){
@@ -117,8 +169,8 @@
         $("#batterie-title").show(500);
         //remove all previous list elements
         $(".batterie-list-element").remove();
+        batterieForBuilding = [];
         // reduce the batterie list to what is needed 
-        var batterieForBuilding = [];
         $.each(batterieList, function(i,batterie){
             console.log(batterie)
             if (batterie.building_id == buildingId)
@@ -135,12 +187,19 @@
         });
     };
     function populateColumnDiv(batterieId){
+
+        $('<h6 id="column-title">Columns</h6>' +
+            '<ul id="column-list">' +
+            '</ul>')
+            .appendTo("#column-div")
+
+
         //prepend a title to the section
         $("#column-title").show(500);
         //remove all previous list elements
         $(".column-list-element").remove();
         // reduce the column list to what is needed 
-        var columnForBatterie = [];
+        columnForBatterie = [];
         $.each(columnList, function(i,column){
             console.log(column)
             if (column.battery_id == batterieId)
@@ -163,7 +222,7 @@
         //remove all previous list elements
         $(".elevator-list-element").remove();
         // reduce the column list to what is needed 
-        var elevatorForColumn = [];
+        elevatorForColumn = [];
         $.each(elevatorList, function(i, elevator){
             console.log(elevator)
             if (elevator.column_id == columnId)
@@ -181,10 +240,9 @@
    
 
     };
-
     // event handlers
     function elevatorEvents(){
-        $.each(elevatorList,function(i,elevator){
+        $.each(elevatorForColumn,function(i, elevator){
             var BListId = `#elevator-${i}`;
             // on click color will change
             $(BListId).click(function(){
@@ -208,6 +266,11 @@
                         `<li>comissioned on : ${elevator.commissioning_date}</li>` +
                    "</ul>"   
                 );
+
+                //fill the preselctor table
+                $("#elevator_id").val(elevator.id);
+
+
                 //store elevator Id 
                 var elevatorId = elevator.id;
                 console.log(elevatorId);
@@ -218,7 +281,7 @@
         });
     };
     function ColumnEvents(){
-       $.each(columnList,function(i,column){
+       $.each(columnForBatterie,function(i,column){
             var BListId = `#column-${i}`;
             // on click color will change
             $(BListId).click(function(){
@@ -239,6 +302,13 @@
                         `<li>notes: ${column.notes}</li>` +
                    "</ul>"   
                 );
+
+                //fill the preselctor table
+                $("#column_id").val(column.id)
+                $("#elevator_id").val(null);
+
+
+
                 //store column Id to call api
                 var columnId = column.id;
                 console.log(columnId);
@@ -247,12 +317,13 @@
 
             })
         });                
-    }
+    };
     function batteriEvents(){
-        $.each(batterieList,function(i,batterie){
+        $.each(batterieForBuilding,function(i,batterie){
             var BListId = `#batterie-${i}`;
             // on click color will change
             $(BListId).click(function(){
+
                 //change the text back to black
                 $(".batterie-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
                 //color the selected item
@@ -275,8 +346,20 @@
                 );
 
                 //empty irrelevent fields
+
+                                $("#column-div").empty();
+
+
+                
                 $(".elevator-list-element").remove();
                 $("#elevator-title").hide();
+                $("#column_id").val(null)
+                $("#elevator_id").val(null);
+
+
+                //fill the preselctor table
+                $("#battery_id").val(batterie.id)
+
 
                 //store batterie Id to call api
                 var batteriId = batterie.id;
@@ -286,23 +369,13 @@
 
             })
         });                
-    }
-
-
-    //DOM READY
-    $(function(){
-        $(".elevator-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
-        $("#column-title").hide();
-        $("#batterie-title").hide();
-        $('#elevator-title').hide();
-        $("#information-display").css({"background-color":"mistyRose"});
-        populateBuildingDiv();
-
-        // eventlisteners determined dinamically for the buildings
+    };
+    function buildingEvents(){
         $.each(buildingList,function(i,building){
             var ListId = `#building-${i}`;
             // on click color will change
             $(ListId).click(function(){
+                $("#batterie-div").find(".batterie-list-element").remove();
                 //change the text back to black
                 $(".building-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
                 //color the selected item
@@ -320,12 +393,21 @@
                    "</ul>"   
                 );
                 //empty irrelevent fields
-                $(".column-list-element").remove();
+                $(".batterie-list-element").remove();
+
+                $("#column-div").empty();
+                //$(".column-list-element").remove();
+
                 $("#column-title").hide();
                 $(".elevator-list-element").remove();
                 $("#elevator-title").hide();
 
+                $("#column_id").val(null)
+                $("#elevator_id").val(null);
+                $("#battery_id").val(null)
 
+                //fill the selector table for intervention form
+                $("#building_id").val(building.id)
                 //store Buidling Id to call api
                 var buildingId = building.id;
                 console.log(buildingId);
@@ -334,5 +416,28 @@
         
             })
         });
+
+    };
+
+
+
+
+    //DOM READY
+    $(function(){
+    
+        $("#customer_id").val(customerclass.id);
+
+        // hide stuff and give it some STYLE
+        $(".elevator-list-element").css({"color": "black","background-color":"white","word-wrap":"break-word","padding":"5px"})
+        $("#column-title").hide();
+        $("#batterie-title").hide();
+        $('#elevator-title').hide();
+        $("#information-display").css({"background-color":"mistyRose"});
+
+        populateBuildingDiv();
+        //start listening for events
+        buildingEvents();
+
+        
     }); 
 </script>
