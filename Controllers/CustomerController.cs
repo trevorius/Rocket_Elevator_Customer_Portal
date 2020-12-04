@@ -24,7 +24,7 @@ namespace CustomerPortal.Controllers
         {  
             // define base variables for final conection string 
             string URLreturn ;
-            string baseUrl = "http://localhost:5501/api/";
+            string baseUrl = "https://rocket-elevators-status.azurewebsites.net/api/";
             // logic for the return string so it correspondes to api end points
             if(variable == null)
             {            
