@@ -3,14 +3,30 @@
 }
 
 @{
+	@* get customer infor for text *@
+	var customer = ViewBag.customer;
+	
+	@*get numbers for graphs *@
 	var batterytotal = ViewBag.BatteriesTotal ;
 	System.Console.WriteLine(batterytotal);
 	var activeBatteries= ViewBag.activeBatteries ;
 	System.Console.WriteLine(activeBatteries);
 	var activeBatteriespercent = (activeBatteries*100/batterytotal);
-
 	string batterygraph = "width:" + activeBatteriespercent + "%; min-width: 2em;" ;
 	System.Console.WriteLine(activeBatteriespercent);
+
+	var Buildings = ViewBag.buildingsN;
+
+	var columnTotal = ViewBag.ColumnTotal ;
+	var activeColumns = ViewBag.activecolumns ;
+	var activeColumnsPercentage = (activeColumns*100/columnTotal);
+
+	var elevatorTotal = ViewBag.ElevatorTotal;
+	var activeElevators = ViewBag.activeElevators ;
+	var activeElevatorsPercentage = (activeElevators*100/elevatorTotal);
+
+	
+
 }		
 
 
@@ -22,42 +38,42 @@
 
 						<div class="col-sm-6">
 							<header class="mb-40">
-								<h1 class="fw-300">Welcome to Smarty</h1>
-								<h2 class="fw-300 letter-spacing-1 fs-13"><span>THE MOST COMPLETE TEMPLATE EVER</span></h2>
+								<h1 class="fw-300">Hello @customer.full_name_company_contact</h1>
+								<h2 class="fw-300 letter-spacing-1 fs-13"><span>You will find here all the information you need</span></h2>
 							</header>
 
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero quod consequuntur quibusdam, enim expedita sed quia nesciunt incidunt accusamus necessitatibus modi adipisci officia libero accusantium esse hic, obcaecati, ullam, laboriosam!</p>
+							<p>Your buisness is as precious to us as your time is to you... So i shall make it brief. Your technician is : @customer.full_name_service_technical_authority, they can be joined at : @customer.technical_authority_phone, or @customer.technical_manager_email </p>
 							
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corrupti vero, animi suscipit id facere officia. Aspernatur, quo, quos nisi dolorum aperiam fugiat deserunt velit rerum laudantium cum magnam.</p>
+							<p>We are proud to count a company from @customer.company_headquarter_address as our customer since @customer.customer_creation_date and hope to see your for much longer </p>
 
 
 						</div>	
 						<!-- skills -->
-						<div class="col-sm-6">
-							<h4>Our Skills</h4>
+						<div class="col-sm-6 m-auto">
+							<h4>Status For @customer.company_name</h4>
 
 							<label>
+								<span class="float-right"></span>
+								@Buildings Buildings
+							</label>
+							<div class="progress progress-xxs">
+								<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; min-width: 2em;"></div>
+							</div>
+							<label>
 								<span class="float-right">@ViewBag.activeBatteries / @batterytotal</span>
-								Active batteries
+								Active Batteries
 							</label>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow='@ViewBag.activeBatteries' aria-valuemin='@batterytotal' aria-valuemax="" style='@batterygraph'></div>
 							</div>
 
-							<label>
-								<span class="float-right">88%</span>
-								SALES
-							</label>
-							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 88%; min-width: 2em;"></div>
-							</div>
 
 							<label>
-								<span class="float-right">93%</span>
-								DESIGN
+								<span class="float-right">@activeColumns / @columnTotal</span>
+								Active Columns
 							</label>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 93%; min-width: 2em;"></div>
+								<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow='@activeColumns' aria-valuemin="0" aria-valuemax='@columnTotal' style="width: @activeColumnsPercentage%; min-width: 2em;"></div>
 							</div>
 
 							<label>

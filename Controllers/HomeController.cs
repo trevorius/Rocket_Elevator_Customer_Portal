@@ -38,11 +38,11 @@ namespace CustomerPortal.Controllers
             // create a list of Elevators and store in Viewbag
             var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
             ViewBag.elevatorList = elevatorList;
-
+            
+            // create active lists to count for index page
             List<Battery> activeBatteries = new List<Battery>();
             List<Column> activeColumns = new List<Column>();
             List<Elevator> activeElevators = new List<Elevator>();
-            
             foreach(Battery battery in batteryList)
             {
                 if (battery.status.ToLower() == "active")
@@ -50,8 +50,27 @@ namespace CustomerPortal.Controllers
                     activeBatteries.Add(battery);
                 }
             }
+            foreach(Column column in columnList)
+            {
+                if(column.status.ToLower() == "active")
+                {
+                    activeColumns.Add(column);
+                }
+            }
+            foreach(Elevator elevator in elevatorList)
+            {
+                if(elevator.status.ToLower() == "active")
+                {
+                    activeElevators.Add(elevator);
+                }
+            }
             ViewBag.activeBatteries = activeBatteries.Count() ;
             ViewBag.BatteriesTotal = batteryList.Count();
+            ViewBag.buildingsN = buildingList.Count();
+            ViewBag.activecolumns =activeColumns.Count();
+            ViewBag.ColumnTotal = columnList.Count();
+            ViewBag.activeElevators = activeElevators.Count();
+            ViewBag.ElevatorTotal = elevatorList.Count();
             
 
 
