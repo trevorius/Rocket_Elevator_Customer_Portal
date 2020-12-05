@@ -92,28 +92,7 @@ namespace CustomerPortal.Controllers
             var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
             ViewBag.elevatorList = elevatorList;
 
-            // if (predefinedIntervention.author != null)
-            // {
-            //     using (var client = new HttpClient())
-            //     {
-            //         client.BaseAddress = new Uri(CustomerController.ApiURL("interventions"));
-
-            //         //HTTP POST
-            //         var postTask = client.PostAsJsonAsync<Intervention>("intervention", predefinedIntervention);
-            //         postTask.Wait();
-
-            //         var result = postTask.Result;
-            //         if (result.IsSuccessStatusCode)
-            //         {
-            //             System.Console.WriteLine("post sent");
-            //             return View();
-            //         }
-            //         ModelState.AddModelError(string.Empty, "Server Error. Please contact administrator.");
-
-            //         return View();
-            //     }
-
-            // }
+            
 
             return View();
         }
