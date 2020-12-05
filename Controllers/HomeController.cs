@@ -21,21 +21,53 @@ namespace CustomerPortal.Controllers
             _logger = logger;
         }
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            string email = User.Identity.Name;
+            Customer customer = await CustomerController.getCustomerByEmail(email);
+            ViewBag.customer = customer ;
+            // create a list of buildings for customer and stor in viewbag
+            var buildingList = await ProductsController.getBuildingListForCustomer(customer.id);
+            ViewBag.buildingList = buildingList;
+            // creqte a list of batteries and store in Viewbag
+            var batteryList = await ProductsController.getBatteryListForBuilding(customer.id);
+            ViewBag.batteryList = batteryList;
+            // create a list od columns and store in Viewbag
+            var columnList = await ProductsController.getColumnListForBattery(customer.id);
+            ViewBag.columnList = columnList;
+            // create a list of Elevators and store in Viewbag
+            var elevatorList = await ProductsController.getElevatorListForColumn(customer.id);
+            ViewBag.elevatorList = elevatorList;
 
-        public async Task<IActionResult> Privacy()
-        {
-            //call buildings for customer 3 test function
-            var buildinglist = await ProductsController.getBuildingListForCustomer(3);
+            List<Battery> activeBatteries = new List<Battery>();
+            List<Column> activeColumns = new List<Column>();
+            List<Elevator> activeElevators = new List<Elevator>();
+            
+            foreach(Battery battery in batteryList)
+            {
+                if (battery.status.ToLower() == "active")
+                {
+                    activeBatteries.Add(battery);
+                }
+            }
+            ViewBag.activeBatteries = activeBatteries.Count() ;
+            ViewBag.BatteriesTotal = batteryList.Count();
             
 
-            // call customerlist to test function
-            var customerList = await CustomerController.getCustomerList();
+
             return View();
         }
+
+        // public async Task<IActionResult> Privacy()
+        // {
+        //     //call buildings for customer 3 test function
+        //     var buildinglist = await ProductsController.getBuildingListForCustomer(3);
+            
+
+        //     // call customerlist to test function
+        //     var customerList = await CustomerController.getCustomerList();
+        //     return View();
+        // }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
